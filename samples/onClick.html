@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width,user-scalable=no" />
+    <title>Vulcan SDK - onClick Version </title>
+  </head>
+  <body>
+    <script src="./vulcanSDK.js" type="application/javascript"></script>
+    <script>
+      const iconSticky = '<path d="M19,3H5C3.895,3,3,3.895,3,5v14c0,1.105,0.895,2,2,2h10l6-6V5C21,3.895,20.105,3,19,3z M7,7h10v2H7V7z M12,13H7v-2h5V13z M14,19.5V14h5.5L14,19.5z" fill="currentColor" fill-rule="nonzero"/>';
+      function run() {
+        vulcanSDK.initialize({
+          extensionPoints: {
+            leftBar: {
+              title: 'Rect Spawner',
+              svgIcon: iconSticky,
+              iconType: 'svg',
+              slug: 'test-plugin',
+              onClick: () => {
+                vulcanSDK.chart.createObject(
+                  {
+                    type: "Rect",
+                    width: "300",
+                    height: "100",
+                    text: "This is custom object created from Forge hosted plugin",
+                    backgroundColor: '#aeaeae'
+                  }
+                );
+              }
+            }
+          }
+        });
+      }
+      vulcanSDK.onReady(run);
+    </script>
+  </body>
+</html>
