@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width,user-scalable=no" />
+    <title>Vulcan SDK - openDrawer Version </title>
+  </head>
+  <body>
+    <button>I am a Timer</button>
+    <script src="./vulcanSDK.js" type="application/javascript"></script>
+    <script>
+      function run() {
+        vulcanSDK.initialize({
+          extensionPoints: {
+            leftBar: {
+              title: 'My Timer',
+              icon: 'gavel',
+              iconType: 'material-icon',
+              slug: 'test-timer-plugin',
+              onClick: () => {
+                vulcanSDK.chart.openDrawer('www.google.com', { title: 'My Timer', width: 200, height: 300 });
+              }
+            }
+          }
+        });
+      }
+      vulcanSDK.onReady(run);
+    </script>
+  </body>
+</html>

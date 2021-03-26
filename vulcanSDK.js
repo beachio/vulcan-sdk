@@ -61,6 +61,9 @@
     chart: {
       createObject(option) {
         window.top.postMessage({...option, action: 'createObject'}, '*');
+      },
+      openDrawer(url, option) {
+        window.top.postMessage({...option, url, action: 'openDrawer'}, '*');
       }
     }
   }
