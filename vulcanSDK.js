@@ -24,18 +24,22 @@
       const recognizedEvents = ['onClick'];
       const eventBuses = {};
       Object.keys(extensionPoints).forEach(point => {
-        const info = extensionPoints[point];
+        const infos = extensionPoints[point];
+        if (infos) {
+          infos.forEach(info => {
+            // Special handling for event callbacks
+            // Register to event buses and filter out event callbacks
+            recognizedEvents.forEach(eventType => {
+              if (info.hasOwnProperty(eventType)) {
+                eventBuses[eventType] = info[eventType];
+                delete info[eventType];
+              }
+            });
+    
+            window.top.postMessage({...info, point, action: 'initPlugin'}, '*');
+          })
+        }
 
-        // Special handling for event callbacks
-        // Register to event buses and filter out event callbacks
-        recognizedEvents.forEach(eventType => {
-          if (info.hasOwnProperty(eventType)) {
-            eventBuses[eventType] = info[eventType];
-            delete info[eventType];
-          }
-        });
-
-        window.top.postMessage({...info, point, action: 'initPlugin'}, '*');
       });
 
 

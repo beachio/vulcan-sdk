@@ -13,7 +13,7 @@
       function run() {
         vulcanSDK.initialize({
           extensionPoints: {
-            leftBar: {
+            leftBar: [{
               title: 'My Timer',
               icon: 'gavel',
               iconType: 'material-icon',
@@ -21,7 +21,7 @@
               onClick: () => {
                 vulcanSDK.chart.openDrawer('www.google.com', { title: 'My Timer', width: 200, height: 300 });
               }
-            }
+            }]
           }
         });
       }
