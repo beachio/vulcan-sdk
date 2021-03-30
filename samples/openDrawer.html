@@ -4,22 +4,21 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width,user-scalable=no" />
-    <title>Vulcan SDK - openDrawer Version </title>
+    <title>Vulcan SDK - onClick Version </title>
   </head>
   <body>
-    <button>I am a Timer</button>
     <script src="./vulcanSDK.js" type="application/javascript"></script>
     <script>
       function run() {
         vulcanSDK.initialize({
           extensionPoints: {
             leftBar: [{
-              title: 'My Timer',
-              icon: 'gavel',
+              title: 'Relative Path',
+              icon: 'mdi-launch',
               iconType: 'material-icon',
-              slug: 'test-timer-plugin',
+              slug: 'relative',
               onClick: () => {
-                vulcanSDK.chart.openDrawer('www.google.com', { title: 'My Timer', width: 200, height: 300 });
+                vulcanSDK.chart.ui.openDrawer('https://www.vulcanapp.com', { title: 'My Timer', width: 375, height: 490 });
               }
             }]
           }

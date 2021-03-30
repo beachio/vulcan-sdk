@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width,user-scalable=no" />
-    <title>Vulcan SDK - createObject Version </title>
+    <title>Vulcan SDK - onClick Version </title>
   </head>
   <body>
     <script src="./vulcanSDK.js" type="application/javascript"></script>
@@ -17,9 +17,9 @@
               title: 'Rect Spawner',
               icon: iconSticky,
               iconType: 'svg',
-              slug: 'test-plugin',
+              slug: 'adobe-cc',
               onClick: () => {
-                vulcanSDK.chart.createObject(
+                vulcanSDK.chart.objects.create(
                   {
                     type: "Rect",
                     width: "300",
