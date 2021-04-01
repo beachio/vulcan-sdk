@@ -77,26 +77,33 @@
       var eventer = window[eventMethod];
       var messageEvent = eventMethod == 'attachEvent' ? 'onmessage' : 'message';
 
+      // IMPORTANT
       // Listen to message from parent window
+      // - eventType: onClick, etc
+      // - listenerType: SELECTION_UPDATED, OBJECTS_CREATED, OBJECTS_UPDATED
+      // - callbackType: viewport/get, settings/getWidgetLink, etc 
       eventer(messageEvent,function(e) {
         try {
+          // - eventType: onClick, etc
           const eventType = e.data?.eventType; 
           if (eventType && Object.keys(eventBuses).includes(eventType)) {
             eventBuses[eventType].call();
           }
 
+          // - listenerType: SELECTION_UPDATED, OBJECTS_CREATED, OBJECTS_UPDATED
           const listenerType = e.data?.listenerType;
           if (listenerType && Object.keys(listenerMapping).includes(listenerType)) {
             if (listenerMapping[listenerType] && this.listeners[listenerMapping[listenerType]] instanceof Function)
               this.listeners[listenerType].call(e.data);
           }
 
+          // - callbackType: viewport/get, settings/getWidgetLink, etc 
           const callbackType = e.data?.callbackType;
           if (callbackType) {
             const callbackTypeCategory = callbackType.split('/')[0];
             const callbackTypeEvent = callbackType.split('/')[1];
             if (callbackTypeCategory && callbackTypeEvent && this.callBacks[callbackTypeCategory][callbackTypeEvent] instanceof Function)
-              this.callBacks[callbackTypeCategory][callbackTypeEvent].call();
+              this.callBacks[callbackTypeCategory][callbackTypeEvent].call(e.data.options);
           }
         } catch(error) {
           console.log("Error on iframe message event", error)
@@ -109,11 +116,7 @@
       window.top.postMessage({ eventName, callback, action: 'addListener' }, '*');
     },
     
-    chart: {
-      createObject(option) {
-        window.top.postMessage({...option, action: 'createObject'}, '*');
-      },
-      
+    chart: { 
     }
   }
 
@@ -145,34 +148,35 @@
   };
 
   vulcanSDK.chart.viewport = {
-    get: (chartId, callback) => {
-      window.top.postMessage({chartId, action: 'viewport/get'}, '*');
+    get: (callback) => {
+      window.top.postMessage({action: 'viewport/get'}, '*');
       this.callBacks.viewport.get = callback;
     },
-    set: (chartId, option) => {
-      window.top.postMessage({...option, chartId, action: 'viewport/set'}, '*');
+    // option = { x, y } : Setting viewport translate
+    set: (option) => {
+      window.top.postMessage({...option, action: 'viewport/set'}, '*');
     },
-    setWithAnimation: (chartId, option) => {
-      window.top.postMessage({...option, chartId, action: 'viewport/setWithAnimation'}, '*');
+    setWithAnimation: (option) => {
+      window.top.postMessage({...option, action: 'viewport/setWithAnimation'}, '*');
     },
-    zoomToObject: (chartId, objectId) => {
-      window.top.postMessage({chartId, objectId, action: 'viewport/zoomToObject'}, '*');
+    zoomToObject: (objectId) => {
+      window.top.postMessage({objectId, action: 'viewport/zoomToObject'}, '*');
     },
-    getZoomLevel: (chartId) => {
-      window.top.postMessage({chartId, action: 'viewport/getZoomLevel'}, '*');
+    getZoomLevel: (callback) => {
+      window.top.postMessage({action: 'viewport/getZoomLevel'}, '*');
       this.callBacks.viewport.getZoomLevel = callback;
     },
-    setZoomLevel: (chartId, zoomLevel) => {
-      window.top.postMessage({chartId, zoomLevel, action: 'viewport/setZoomLevel'}, '*');
+    setZoomLevel: (scale) => {
+      window.top.postMessage({scale, action: 'viewport/setZoomLevel'}, '*');
     }
   };
 
   vulcanSDK.chart.settings = {
-    enableBackgroundImage: (chartId) => {
-      window.top.postMessage({chartId, action: 'settings/enableBackgroundImage'}, '*');
+    enableBackgroundImage: (bgImageEnabled) => {
+      window.top.postMessage({bgImageEnabled, action: 'settings/enableBackgroundImage'}, '*');
     },
-    setBackgroundImage: (chartId, option) => {
-      window.top.postMessage({...option, chartId, action: 'viewport/setBackgroundImage'}, '*');
+    setBackgroundImage: (backgroundImage) => {
+      window.top.postMessage({backgroundImage, action: 'viewport/setBackgroundImage'}, '*');
     },
     getBackgroundImage: (chartId, callback) => {
       window.top.postMessage({chartId, action: 'viewport/getBackgroundImage'}, '*');
@@ -184,6 +188,7 @@
     disableGrid: (chartId) => {
       window.top.postMessage({chartId, action: 'settings/disableGrid'}, '*');
     },
+    // option = {gridSize, gridColor, gridSnap}
     updateGridOptions: (chartId, option) => {
       window.top.postMessage({...option, chartId, action: 'settings/updateGridOptions'}, '*');
     },
@@ -193,14 +198,14 @@
     disableNavigationControl: () => {
       window.top.postMessage({chartId, action: 'settings/disableNavigationControl'}, '*');
     },
-    moveToProject: (chartId, projectId) => {
-      window.top.postMessage({chartId, projectId, action: 'settings/moveToProject'}, '*');
+    moveToProject: (projectId) => {
+      window.top.postMessage({projectId, action: 'settings/moveToProject'}, '*');
     },
-    enablePublicLink: (chartId) => {
-      window.top.postMessage({chartId, action: 'settings/enablePublicLink'}, '*');
+    enablePublicLink: () => {
+      window.top.postMessage({action: 'settings/enablePublicLink'}, '*');
     },
-    disablePublicLink: (chartId) => {
-      window.top.postMessage({chartId, action: 'settings/disablePublicLink'}, '*');
+    disablePublicLink: () => {
+      window.top.postMessage({action: 'settings/disablePublicLink'}, '*');
     },
     getPublicStatus: (chartId, callback) => {
       window.top.postMessage({chartId, action: 'viewport/getPublicStatus'}, '*');
@@ -231,7 +236,7 @@
       this.callBacks.objects.get = callback;
     },
     update: (objectId, option) => {
-      window.top.postMessage({...option, objectId, action: 'objects/update'}, '*');
+      window.top.postMessage({option, objectId, action: 'objects/update'}, '*');
     },
     bringForward: (objectId) => {
       window.top.postMessage({objectId, action: 'objects/bringForward'}, '*');
@@ -257,8 +262,8 @@
     hideEditor: (objectId) => {
       window.top.postMessage({objectId, action: 'objects/hideEditor'}, '*');
     },
-    createSymbol: (option) => {
-      window.top.postMessage({...option, action: 'objects/createSymbol'}, '*');
+    createSymbol: (objectId, symbolName) => {
+      window.top.postMessage({objectId, symbolName, action: 'objects/createSymbol'}, '*');
     },
     duplicate: (objectId) => {
       window.top.postMessage({objectId, action: 'objects/duplicate'}, '*');
@@ -267,7 +272,7 @@
       window.top.postMessage({objectId, type, action: 'objects/changeType'}, '*');
     },
     createGroup: (option) => {
-      window.top.postMessage({...option, action: 'objects/createGroup'}, '*');
+      window.top.postMessage({option, action: 'objects/createGroup'}, '*');
     },
     addToGroup: (groupId, objectId) => {
       window.top.postMessage({objectId, groupId, action: 'objects/addToGroup'}, '*');
