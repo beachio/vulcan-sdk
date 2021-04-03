@@ -27,8 +27,12 @@
               :items="methods[category]"
               label="Method"
               v-model="method"
+              @change="onChangeMethod"
             ></v-select>
           </v-col>
+        </v-row>
+        <v-row align="left" v-if="schema.fields">
+          <vue-form-generator tag="div" :schema="schema" :model="this.optionModel"></vue-form-generator>
         </v-row>
         <v-row align="center">
           <v-col
@@ -38,22 +42,29 @@
             <v-btn @click.stop="callSDK"><v-icon>mdi-send</v-icon></v-btn>
           </v-col>
         </v-row>
-      </v-container>        
+        <v-row align="center">
+          <v-col
+            class="d-flex"
+            cols="12"
+          >
+            
+          </v-col>
+        </v-row>
+      </v-container>
     </v-card-text>
   </v-card>
 
 </template>
 
 <script>
+import VueFormGenerator from "vue-form-generator";
+import scheme from './scheme';
+import 'vue-form-generator/dist/vfg.css'
 export default {
-  name: 'SimpleTimer',
-  props: {
-    audioEffect: {
-      type: String,
-      default: "0"
-    },
-    storage: Object
-  },
+  name: 'ExampleView',
+  components: {
+		"vue-form-generator": VueFormGenerator.component
+	},
   data() {
     return {
       categories: ['ui', 'viewport', 'settings', 'objects', 'events'],
@@ -65,92 +76,62 @@ export default {
         events: ['SELECTETION_UPDATED', 'OBJECTS_CREATED', 'OBJECTS_DELETED', 'ALL_OBJECTS_LOADED']
       },
       category: null,
-      method: null
+      method: null,
+      schema: {
+        fields: null
+      },
+      optionModel: {}
     }
   },
   mounted() {
   },
   methods: {
     callSDK() {
-      if (this.category && this.method) vulcanSDK.chart[this.category][this.method].call();
+      if (this.category && this.method) {
+        const schemeInfo = scheme[this.category] ? scheme[this.category][this.method] : null;
+        // Get additional method information and take care of addtional handling
+        if (schemeInfo) {
+          // Callback case
+          if (schemeInfo.type === 'callback') {
+            const callbackFunc = function(data) {
+              console.log("returned from iframe", data);
+            };
+            vulcanSDK.chart[this.category][this.method].apply(null, [callbackFunc]);
+            return;
+          }
+          if (schemeInfo.type === 'model') {
+            const option = this.optionModel;
+            console.log("option", option);
+            vulcanSDK.chart[this.category][this.method].apply(null, [option]);
+            return;
+          }
+        }
+        vulcanSDK.chart[this.category][this.method].call();
+      }
+    },
+    onChangeMethod() {
+      if (this.category && this.method) {
+        const schemeInfo = scheme[this.category] ? scheme[this.category][this.method] : null;
+        // Get additional method information and take care of addtional handling
+        if (schemeInfo && schemeInfo.type === 'model') {
+            this.optionModel = { ...schemeInfo.model };
+            this.schema.fields = schemeInfo.fields;
+        } else
+          this.schema.fields = null;
+      }
     }
   },
 }
 </script>
 
 <style scoped>
-.timer-wrapper {
-  position: relative;
+.vue-form-generator {
+  text-align: left;
+  padding: 20px;
+  width: 100%;
 }
 
-/* styles here */
-/* Sets the containers height and width */
-.base-timer {
-  position: relative;
-  width: 300px;
-  height: 300px;
-}
-/* Removes SVG styling that would hide the time label */
-.base-timer__circle {
-  fill: none;
-  stroke: none;
-}
-/* The SVG path that displays the timer's progress */
-.base-timer__path-elapsed {
-  stroke-width: 7px;
-  stroke: #cbcbcb;
-}
-.base-timer__path-remaining {
-  stroke-width: 7px;
-  stroke-linecap: round;
-  transform: rotate(90deg);
-  transform-origin: center;
-  transition: 1s linear all;
-  fill-rule: nonzero;
-  stroke: currentColor;
-}
-.base-timer__path-remaining.green {
-  color: rgb(65, 184, 131);
-}
-.base-timer__path-remaining.orange {
-  color: orange;
-}
-.base-timer__path-remaining.red {
-  color: red;
-}
-.base-timer__path-remaining.grey {
-  color: #cbcbcb;
-}
-.base-timer__svg {
-  /* Flips the svg and makes the animation to move left-to-right */
-  transform: scaleX(-1);
-}
-.base-timer__label {
-  position: absolute;
-
-  /* Size should match the parent container */
-  width: 300px;
-  height: 300px;
-  /* Keep the label aligned to the top */
-  top: 0;
-  /* Create a flexible box that centers content vertically and horizontally */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  /* Sort of an arbitrary number; adjust to your liking */
-  font-size: 48px;
-}
-
-.button {
-  min-width: 48px !important;
-  padding-left: 10px !important;
-  padding-right: 10px !important;
-  border-radius: 0 !important;
-}
-
-.calendar {
-  position: absolute;
-  top: 30px;
-  right: 30px;
+.vue-form-generator fieldset {
+  border: none;
 }
 </style>

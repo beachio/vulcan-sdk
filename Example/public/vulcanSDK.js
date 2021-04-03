@@ -93,8 +93,8 @@
           // - listenerType: SELECTION_UPDATED, OBJECTS_CREATED, OBJECTS_UPDATED
           const listenerType = e.data?.listenerType;
           if (listenerType && Object.keys(listenerMapping).includes(listenerType)) {
-            if (listenerMapping[listenerType] && this.listeners[listenerMapping[listenerType]] instanceof Function)
-              this.listeners[listenerType].call(e.data);
+            if (listenerMapping[listenerType] && vulcanSDK.listeners[listenerMapping[listenerType]] instanceof Function)
+              vulcanSDK.listeners[listenerType].call(e.data);
           }
 
           // - callbackType: viewport/get, settings/getWidgetLink, etc 
@@ -102,8 +102,8 @@
           if (callbackType) {
             const callbackTypeCategory = callbackType.split('/')[0];
             const callbackTypeEvent = callbackType.split('/')[1];
-            if (callbackTypeCategory && callbackTypeEvent && this.callBacks[callbackTypeCategory][callbackTypeEvent] instanceof Function)
-              this.callBacks[callbackTypeCategory][callbackTypeEvent].call(e.data.options);
+            if (callbackTypeCategory && callbackTypeEvent && vulcanSDK.callBacks[callbackTypeCategory][callbackTypeEvent] instanceof Function)
+              vulcanSDK.callBacks[callbackTypeCategory][callbackTypeEvent].call(e.data.options);
           }
         } catch(error) {
           console.log("Error on iframe message event", error)
@@ -149,8 +149,10 @@
 
   vulcanSDK.chart.viewport = {
     get: (callback) => {
+      console.log("callback", callback);
       window.top.postMessage({action: 'viewport/get'}, '*');
-      this.callBacks.viewport.get = callback;
+      vulcanSDK.callBacks.viewport.get = callback;
+      console.log("this is preserved", vulcanSDK.callBacks.viewport.get);
     },
     // option = { x, y } : Setting viewport translate
     set: (option) => {
@@ -159,47 +161,48 @@
     setWithAnimation: (option) => {
       window.top.postMessage({...option, action: 'viewport/setWithAnimation'}, '*');
     },
-    zoomToObject: (objectId) => {
-      window.top.postMessage({objectId, action: 'viewport/zoomToObject'}, '*');
+    zoomToObject: (option) => {
+      window.top.postMessage({...option, action: 'viewport/zoomToObject'}, '*');
     },
     getZoomLevel: (callback) => {
       window.top.postMessage({action: 'viewport/getZoomLevel'}, '*');
-      this.callBacks.viewport.getZoomLevel = callback;
+      vulcanSDK.callBacks.viewport.getZoomLevel = callback;
     },
-    setZoomLevel: (scale) => {
-      window.top.postMessage({scale, action: 'viewport/setZoomLevel'}, '*');
+    setZoomLevel: (option) => {
+      window.top.postMessage({...option, action: 'viewport/setZoomLevel'}, '*');
     }
   };
 
   vulcanSDK.chart.settings = {
-    enableBackgroundImage: (bgImageEnabled) => {
-      window.top.postMessage({bgImageEnabled, action: 'settings/enableBackgroundImage'}, '*');
+    enableBackgroundImage: (option) => {
+      window.top.postMessage({...option, action: 'settings/enableBackgroundImage'}, '*');
     },
-    setBackgroundImage: (backgroundImage) => {
-      window.top.postMessage({backgroundImage, action: 'viewport/setBackgroundImage'}, '*');
+    setBackgroundImage: (option) => {
+      window.top.postMessage({...option, action: 'viewport/setBackgroundImage'}, '*');
     },
-    getBackgroundImage: (chartId, callback) => {
-      window.top.postMessage({chartId, action: 'viewport/getBackgroundImage'}, '*');
-      this.callBacks.settings.getBackgroundImage = callback;
+    getBackgroundImage: (option, callback) => {
+      window.top.postMessage({...option, action: 'viewport/getBackgroundImage'}, '*');
+      vulcanSDKcallBacks.settings.getBackgroundImage = callback;
     },
-    enableGrid: (chartId) => {
-      window.top.postMessage({chartId, action: 'settings/enableGrid'}, '*');
+    enableGrid: (option) => {
+      window.top.postMessage({...option, action: 'settings/enableGrid'}, '*');
     },
-    disableGrid: (chartId) => {
-      window.top.postMessage({chartId, action: 'settings/disableGrid'}, '*');
+    disableGrid: (option) => {
+      window.top.postMessage({...option, action: 'settings/disableGrid'}, '*');
     },
     // option = {gridSize, gridColor, gridSnap}
-    updateGridOptions: (chartId, option) => {
-      window.top.postMessage({...option, chartId, action: 'settings/updateGridOptions'}, '*');
+    updateGridOptions: (option) => {
+      window.top.postMessage({...option, action: 'settings/updateGridOptions'}, '*');
     },
-    enableNavigationControl: (chartId) => {
-      window.top.postMessage({chartId, action: 'settings/enableNavigationControl'}, '*');
+    enableNavigationControl: () => {
+      window.top.postMessage({action: 'settings/enableNavigationControl'}, '*');
     },
     disableNavigationControl: () => {
-      window.top.postMessage({chartId, action: 'settings/disableNavigationControl'}, '*');
+      window.top.postMessage({action: 'settings/disableNavigationControl'}, '*');
     },
-    moveToProject: (projectId) => {
-      window.top.postMessage({projectId, action: 'settings/moveToProject'}, '*');
+    // option = { projectId }
+    moveToProject: (option) => {
+      window.top.postMessage({...option, action: 'settings/moveToProject'}, '*');
     },
     enablePublicLink: () => {
       window.top.postMessage({action: 'settings/enablePublicLink'}, '*');
@@ -207,23 +210,23 @@
     disablePublicLink: () => {
       window.top.postMessage({action: 'settings/disablePublicLink'}, '*');
     },
-    getPublicStatus: (chartId, callback) => {
-      window.top.postMessage({chartId, action: 'viewport/getPublicStatus'}, '*');
-      this.callBacks.settings.getPublicStatus = callback;
+    getPublicStatus: (option, callback) => {
+      window.top.postMessage({...option, action: 'viewport/getPublicStatus'}, '*');
+      vulcanSDKcallBacks.settings.getPublicStatus = callback;
     },
-    getWidgetLink: (widgetId, callback) => {
-      window.top.postMessage({widgetId, action: 'viewport/getWidgetLink'}, '*');
-      this.callBacks.settings.getWidgetLink = callback;
+    getWidgetLink: (option, callback) => {
+      window.top.postMessage({...option, action: 'viewport/getWidgetLink'}, '*');
+      vulcanSDKcallBacks.settings.getWidgetLink = callback;
     },
-    getWidgetEmbedSnippet: (widgetId, callback) => {
-      window.top.postMessage({widgetId, action: 'viewport/getWidgetEmbedSnippet'}, '*');
-      this.callBacks.settings.getWidgetEmbedSnippet = callback;
+    getWidgetEmbedSnippet: (option, callback) => {
+      window.top.postMessage({...option, action: 'viewport/getWidgetEmbedSnippet'}, '*');
+      vulcanSDKcallBacks.settings.getWidgetEmbedSnippet = callback;
     },
-    enableWidgetComments: (chartId, objectId) => {
-      window.top.postMessage({chartId, objectId, action: 'settings/enableWidgetComments'}, '*');
+    enableWidgetComments: (option) => {
+      window.top.postMessage({...option, action: 'settings/enableWidgetComments'}, '*');
     },
-    disableWidgetComments: (chartId, objectId) => {
-      window.top.postMessage({chartId, objectId, action: 'settings/disableWidgetComments'}, '*');
+    disableWidgetComments: (option) => {
+      window.top.postMessage({...option, action: 'settings/disableWidgetComments'}, '*');
     },
   };
 
@@ -231,51 +234,63 @@
     create: (option) => {
       window.top.postMessage({...option, action: 'objects/create'}, '*');
     },
-    get: (objectId, callback) => {
-      window.top.postMessage({objectId, action: 'objects/get'}, '*');
-      this.callBacks.objects.get = callback;
+    get: (option, callback) => {
+      window.top.postMessage({...option, action: 'objects/get'}, '*');
+      vulcanSDKcallBacks.objects.get = callback;
     },
-    update: (objectId, option) => {
-      window.top.postMessage({option, objectId, action: 'objects/update'}, '*');
+    update: (option) => {
+      window.top.postMessage({...option, action: 'objects/update'}, '*');
     },
-    bringForward: (objectId) => {
-      window.top.postMessage({objectId, action: 'objects/bringForward'}, '*');
+    // option = { objectId }
+    bringForward: (option) => {
+      window.top.postMessage({...option, action: 'objects/bringForward'}, '*');
     },
-    bringToFront: (objectId) => {
-      window.top.postMessage({objectId, action: 'objects/bringToFront'}, '*');
+    // option = { objectId }
+    bringToFront: (option) => {
+      window.top.postMessage({...option, action: 'objects/bringToFront'}, '*');
     },
-    sendBackward: (objectId) => {
-      window.top.postMessage({objectId, action: 'objects/sendBackward'}, '*');
+    // option = { objectId }
+    sendBackward: (option) => {
+      window.top.postMessage({...option, action: 'objects/sendBackward'}, '*');
     },
-    sendToBack: (objectId) => {
-      window.top.postMessage({objectId, action: 'objects/sendToBack'}, '*');
+    // option = { objectId }
+    sendToBack: (option) => {
+      window.top.postMessage({...option, action: 'objects/sendToBack'}, '*');
     },
-    lock: (objectId) => {
-      window.top.postMessage({objectId, action: 'objects/lock'}, '*');
+    // option = { objectId }
+    lock: (option) => {
+      window.top.postMessage({...option, action: 'objects/lock'}, '*');
     },
-    unlock: (objectId) => {
-      window.top.postMessage({objectId, action: 'objects/unlock'}, '*');
+    // option = { objectId }
+    unlock: (option) => {
+      window.top.postMessage({...option, action: 'objects/unlock'}, '*');
     },
-    showEditor: (objectId) => {
-      window.top.postMessage({objectId, action: 'objects/showEditor'}, '*');
+    // option = { objectId }
+    showEditor: (option) => {
+      window.top.postMessage({...option, action: 'objects/showEditor'}, '*');
     },
-    hideEditor: (objectId) => {
-      window.top.postMessage({objectId, action: 'objects/hideEditor'}, '*');
+    // option = { objectId }
+    hideEditor: (option) => {
+      window.top.postMessage({...option, action: 'objects/hideEditor'}, '*');
     },
-    createSymbol: (objectId, symbolName) => {
-      window.top.postMessage({objectId, symbolName, action: 'objects/createSymbol'}, '*');
+    // option = { objectId, symbolName }
+    createSymbol: (option) => {
+      window.top.postMessage({...option, action: 'objects/createSymbol'}, '*');
     },
-    duplicate: (objectId) => {
-      window.top.postMessage({objectId, action: 'objects/duplicate'}, '*');
+    // option = { objectId }
+    duplicate: (option) => {
+      window.top.postMessage({...option, action: 'objects/duplicate'}, '*');
     },
-    changeType: (objectId, type) => {
-      window.top.postMessage({objectId, type, action: 'objects/changeType'}, '*');
+    // option = { objectId, type }
+    changeType: (option) => {
+      window.top.postMessage({...option, action: 'objects/changeType'}, '*');
     },
     createGroup: (option) => {
-      window.top.postMessage({option, action: 'objects/createGroup'}, '*');
+      window.top.postMessage({...option, action: 'objects/createGroup'}, '*');
     },
-    addToGroup: (groupId, objectId) => {
-      window.top.postMessage({objectId, groupId, action: 'objects/addToGroup'}, '*');
+    // option = { objectId, groupId }
+    addToGroup: (option) => {
+      window.top.postMessage({...option, action: 'objects/addToGroup'}, '*');
     },
   };
 

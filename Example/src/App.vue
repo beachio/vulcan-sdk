@@ -1,36 +1,19 @@
 <template>
   <v-app id="app">
     <v-main>
-      <Timer :storage="timerStorage" />
+      <ExampleView />
     </v-main>
   </v-app>
 </template>
 
 <script>
-import Timer from './components/Timer.vue';
+import ExampleView from './components/ExampleView.vue';
 
 export default {
   name: 'App',
   components: {
-    Timer
+    ExampleView
   },
-  data() {
-    let timerStorage = {};
-    try {
-      timerStorage = JSON.parse(localStorage.timer);
-    } catch (e) {}
-    return {
-      timerStorage
-    }
-  },
-  watch: {
-    timerStorage: {
-      handler() {
-        localStorage.timer = JSON.stringify(this.timerStorage);
-      },
-      deep: true
-    }
-  }
 }
 </script>
 
