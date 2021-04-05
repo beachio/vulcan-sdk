@@ -202,7 +202,19 @@ const scheme = {
       ]
     },
     get: {
-      type: 'callback'
+      type: 'callback',
+      model: {
+        objectId: ''
+      },
+      fields: [
+        {
+          type: 'input',
+          inputType: 'text',
+          label: 'Object Id',
+          model: 'objectId',
+          required: true
+        }
+      ]
     },
     bringForward: {
       type: 'model',

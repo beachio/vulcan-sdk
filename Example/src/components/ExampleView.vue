@@ -80,7 +80,7 @@ export default {
       schema: {
         fields: null
       },
-      optionModel: {}
+      optionModel: null
     }
   },
   mounted() {
@@ -89,7 +89,6 @@ export default {
     callSDK() {
       if (this.category && this.method) {
         const schemeInfo = scheme[this.category] ? scheme[this.category][this.method] : null;
-        console.log("check for spelling mistake", schemeInfo);
         // Get additional method information and take care of addtional handling
         if (schemeInfo) {
           // Callback case
@@ -97,12 +96,13 @@ export default {
             const callbackFunc = function(data) {
               console.log("*********returned from iframe", data);
             };
-            vulcanSDK.chart[this.category][this.method].apply(null, [callbackFunc]);
+            const option = this.optionModel;
+            const args = this.optionModel ? [this.optionModel, callbackFunc] : [callbackFunc];
+            vulcanSDK.chart[this.category][this.method].apply(null, args);
             return;
           }
           if (schemeInfo.type === 'model') {
             const option = this.optionModel;
-            console.log("option", option);
             vulcanSDK.chart[this.category][this.method].apply(null, [option]);
             return;
           }
@@ -114,11 +114,13 @@ export default {
       if (this.category && this.method) {
         const schemeInfo = scheme[this.category] ? scheme[this.category][this.method] : null;
         // Get additional method information and take care of addtional handling
-        if (schemeInfo && schemeInfo.type === 'model') {
-            this.optionModel = { ...schemeInfo.model };
-            this.schema.fields = schemeInfo.fields;
-        } else
+        if (schemeInfo && schemeInfo.model) {
+          this.optionModel = { ...schemeInfo.model };
+          this.schema.fields = schemeInfo.fields;
+        } else {
+          this.optionModel = null;
           this.schema.fields = null;
+        }
       }
     }
   },

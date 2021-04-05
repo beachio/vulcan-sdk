@@ -84,7 +84,6 @@
       // - callbackType: viewport/get, settings/getWidgetLink, etc 
       eventer(messageEvent,function(e) {
         try {
-          console.log("localhost:8087", e);
           // - eventType: onClick, etc
           const eventType = e.data?.eventType; 
           if (eventType && Object.keys(eventBuses).includes(eventType)) {
@@ -103,8 +102,8 @@
           if (callbackType) {
             const callbackTypeCategory = callbackType.split('/')[0];
             const callbackTypeEvent = callbackType.split('/')[1];
-            if (callbackTypeCategory && callbackTypeEvent && vulcanSDK.callBacks[callbackTypeCategory][callbackTypeEvent] instanceof Function)
-              vulcanSDK.callBacks[callbackTypeCategory][callbackTypeEvent].call(null, e.data.options);
+            if (callbackTypeCategory && callbackTypeEvent && vulcanSDK.callBacks[callbackTypeCategory][callbackTypeEvent] instanceof Function) 
+              vulcanSDK.callBacks[callbackTypeCategory][callbackTypeEvent].call(null, e.data);
           }
         } catch(error) {
           console.log("Error on iframe message event", error)
@@ -178,8 +177,8 @@
     setBackgroundImage: (option) => {
       window.top.postMessage({...option, action: 'settings/setBackgroundImage'}, '*');
     },
-    getBackgroundImage: (option, callback) => {
-      window.top.postMessage({...option, action: 'settings/getBackgroundImage'}, '*');
+    getBackgroundImage: (callback) => {
+      window.top.postMessage({action: 'settings/getBackgroundImage'}, '*');
       vulcanSDK.callBacks.settings.getBackgroundImage = callback;
     },
     enableGrid: (option) => {
@@ -208,16 +207,16 @@
     disablePublicLink: () => {
       window.top.postMessage({action: 'settings/disablePublicLink'}, '*');
     },
-    getPublicStatus: (option, callback) => {
-      window.top.postMessage({...option, action: 'settings/getPublicStatus'}, '*');
+    getPublicStatus: (callback) => {
+      window.top.postMessage({action: 'settings/getPublicStatus'}, '*');
       vulcanSDK.callBacks.settings.getPublicStatus = callback;
     },
-    getWidgetLink: (option, callback) => {
-      window.top.postMessage({...option, action: 'settings/getWidgetLink'}, '*');
+    getWidgetLink: (callback) => {
+      window.top.postMessage({action: 'settings/getWidgetLink'}, '*');
       vulcanSDK.callBacks.settings.getWidgetLink = callback;
     },
-    getWidgetEmbedSnippet: (option, callback) => {
-      window.top.postMessage({...option, action: 'settings/getWidgetEmbedSnippet'}, '*');
+    getWidgetEmbedSnippet: (callback) => {
+      window.top.postMessage({action: 'settings/getWidgetEmbedSnippet'}, '*');
       vulcanSDK.callBacks.settings.getWidgetEmbedSnippet = callback;
     },
     enableWidgetComments: (option) => {
