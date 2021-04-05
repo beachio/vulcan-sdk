@@ -93,7 +93,6 @@
           // - listenerType: SELECTION_UPDATED, OBJECTS_CREATED, OBJECTS_UPDATED
           const listenerType = e.data?.listenerType;
           if (listenerType && Object.keys(listenerMapping).includes(listenerType)) {
-            console.log("listenerType", listenerType);
             if (listenerMapping[listenerType] && vulcanSDK.listeners[listenerMapping[listenerType]] instanceof Function)
               vulcanSDK.listeners[listenerMapping[listenerType]].call(null, e.data);
           }

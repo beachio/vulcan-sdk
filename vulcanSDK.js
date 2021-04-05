@@ -2,6 +2,12 @@
 
 (function (){
   'use strict';
+  const listenerMapping = {
+    'SELECTION_UPDATED': 'selectionUpdated',
+    'OBJECTS_CREATED': 'objectsCreated',
+    'OBJECTS_DELETED': 'objectsDeleted',
+    'ALL_OBJECTS_LOADED': 'allObjectsLoaded'
+  };
 
   const vulcanSDK = {
     callBacks: {
@@ -45,12 +51,6 @@
     initialize: (options) => {
       const { extensionPoints } = options;
       const recognizedEvents = ['onClick'];
-      const listenerMapping = {
-        'SELECTION_UPDATED': 'selectionUpdated',
-        'OBJECTS_CREATED': 'objectsCreated',
-        'OBJECTS_DELETED': 'objectsDeleted',
-        'ALL_OBJECTS_LOADED': 'allObjectsLoaded'
-      };
       const eventBuses = {};
       Object.keys(extensionPoints).forEach(point => {
         const infos = extensionPoints[point];
@@ -94,7 +94,7 @@
           const listenerType = e.data?.listenerType;
           if (listenerType && Object.keys(listenerMapping).includes(listenerType)) {
             if (listenerMapping[listenerType] && vulcanSDK.listeners[listenerMapping[listenerType]] instanceof Function)
-              vulcanSDK.listeners[listenerType].call(null, e.data);
+              vulcanSDK.listeners[listenerMapping[listenerType]].call(null, e.data);
           }
 
           // - callbackType: viewport/get, settings/getWidgetLink, etc 
@@ -113,7 +113,8 @@
     // End of Initialize method
 
     addListener(eventName, callback) {
-      window.top.postMessage({ eventName, callback, action: 'addListener' }, '*');
+      window.top.postMessage({ eventName, action: 'addListener' }, '*');
+      vulcanSDK.listeners[listenerMapping[eventName]] = callback;
     },
     
     chart: {}
