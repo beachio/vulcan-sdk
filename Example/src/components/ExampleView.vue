@@ -1,12 +1,12 @@
 <template>
-  <v-card class="timer-wrapper">
+  <v-card min-height="100%" class="timer-wrapper">
     <v-card-title>
       Testing SDK
     </v-card-title>
 
     <v-card-text>
       <v-container fluid>
-        <v-row align="center">
+        <v-row>
           <v-col
             class="d-flex"
             cols="12"
@@ -18,7 +18,7 @@
             ></v-select>
           </v-col>
         </v-row>
-        <v-row align="center" v-if="category">
+        <v-row v-if="category">
           <v-col
             class="d-flex"
             cols="12"
@@ -44,10 +44,10 @@
         </v-row>
         <v-row v-if="responseData">
           <v-col
-            class="d-flex"
+            class="d-flex text-left"
             cols="12"
           >
-            <json-viewer :value="responseData" expand-depth="3"></json-viewer>
+            <json-viewer :value="responseData" :expand-depth="3"></json-viewer>
           </v-col>
         </v-row>
       </v-container>
@@ -76,7 +76,7 @@ export default {
         viewport: ['get', 'set', 'setWithAnimation', 'zoomToObject', 'setZoomLevel', 'getZoomLevel'],
         settings: ['enableBackgroundImage', 'setBackgroundImage', 'getBackgroundImage', 'enableGrid', 'disableGrid', 'updateGridOptions', 'enableNavigationControl', 'disableNavigationControl', 'moveToProject', 'enablePublicLink', 'disablePublicLink', 'getPublicStatus', 'getWidgetLink', 'getWidgetEmbedSnippet', 'enableWidgetComments', 'disableWidgetComments'],
         objects: ['create', 'get', 'update', 'bringForward', 'bringToFront', 'sendBackward', 'sendToBack', 'lock', 'unlock', 'showEditor', 'hideEditor', 'createSymbol', 'duplicate', 'changeType', 'createGroup', 'addToGroup'],
-        events: ['SELECTETION_UPDATED', 'OBJECTS_CREATED', 'OBJECTS_DELETED', 'ALL_OBJECTS_LOADED']
+        events: ['SELECTION_UPDATED', 'OBJECTS_CREATED', 'OBJECTS_DELETED', 'ALL_OBJECTS_LOADED']
       },
       category: null,
       method: null,
@@ -91,13 +91,13 @@ export default {
   },
   methods: {
     callSDK() {
+      const that = this;
       if (this.category && this.method) {
         const schemeInfo = scheme[this.category] ? scheme[this.category][this.method] : null;
         // Get additional method information and take care of addtional handling
         if (schemeInfo) {
           // Callback case
           if (schemeInfo.type === 'callback') {
-            const that = this;
             const callbackFunc = function(data) {
               that.responseData = data;
               delete that.responseData.callbackType;
@@ -113,6 +113,14 @@ export default {
             return;
           }
         }
+        if (this.category === 'events') {
+          const callbackFunc = function(data) {
+            that.responseData = data;
+            delete that.responseData.listenerType;
+          };
+          vulcanSDK.addListener(this.method, callbackFunc);
+          return;
+        }
         vulcanSDK.chart[this.category][this.method].call();
       }
     },
@@ -127,6 +135,7 @@ export default {
           this.optionModel = null;
           this.schema.fields = null;
         }
+        this.responseData = null;
       }
     }
   },
