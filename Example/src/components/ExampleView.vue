@@ -1,5 +1,5 @@
 <template>
-  <v-card height="490" class="timer-wrapper">
+  <v-card class="timer-wrapper">
     <v-card-title>
       Testing SDK
     </v-card-title>
@@ -42,12 +42,12 @@
             <v-btn @click.stop="callSDK"><v-icon>mdi-send</v-icon></v-btn>
           </v-col>
         </v-row>
-        <v-row align="center">
+        <v-row v-if="responseData">
           <v-col
             class="d-flex"
             cols="12"
           >
-            
+            <json-viewer :value="responseData" expand-depth="3"></json-viewer>
           </v-col>
         </v-row>
       </v-container>
@@ -58,12 +58,15 @@
 
 <script>
 import VueFormGenerator from "vue-form-generator";
+import JsonViewer from "vue-json-viewer";
 import scheme from './scheme';
 import 'vue-form-generator/dist/vfg.css'
+
 export default {
   name: 'ExampleView',
   components: {
-		"vue-form-generator": VueFormGenerator.component
+		"vue-form-generator": VueFormGenerator.component,
+    JsonViewer
 	},
   data() {
     return {
@@ -80,7 +83,8 @@ export default {
       schema: {
         fields: null
       },
-      optionModel: null
+      optionModel: null,
+      responseData: null
     }
   },
   mounted() {
@@ -93,8 +97,10 @@ export default {
         if (schemeInfo) {
           // Callback case
           if (schemeInfo.type === 'callback') {
+            const that = this;
             const callbackFunc = function(data) {
-              console.log("*********returned from iframe", data);
+              that.responseData = data;
+              delete that.responseData.callbackType;
             };
             const option = this.optionModel;
             const args = this.optionModel ? [this.optionModel, callbackFunc] : [callbackFunc];
