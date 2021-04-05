@@ -84,6 +84,7 @@
       // - callbackType: viewport/get, settings/getWidgetLink, etc 
       eventer(messageEvent,function(e) {
         try {
+          console.log("localhost:8087", e);
           // - eventType: onClick, etc
           const eventType = e.data?.eventType; 
           if (eventType && Object.keys(eventBuses).includes(eventType)) {
@@ -94,7 +95,7 @@
           const listenerType = e.data?.listenerType;
           if (listenerType && Object.keys(listenerMapping).includes(listenerType)) {
             if (listenerMapping[listenerType] && vulcanSDK.listeners[listenerMapping[listenerType]] instanceof Function)
-              vulcanSDK.listeners[listenerType].call(e.data);
+              vulcanSDK.listeners[listenerType].call(null, e.data);
           }
 
           // - callbackType: viewport/get, settings/getWidgetLink, etc 
@@ -103,7 +104,7 @@
             const callbackTypeCategory = callbackType.split('/')[0];
             const callbackTypeEvent = callbackType.split('/')[1];
             if (callbackTypeCategory && callbackTypeEvent && vulcanSDK.callBacks[callbackTypeCategory][callbackTypeEvent] instanceof Function)
-              vulcanSDK.callBacks[callbackTypeCategory][callbackTypeEvent].call(e.data.options);
+              vulcanSDK.callBacks[callbackTypeCategory][callbackTypeEvent].call(null, e.data.options);
           }
         } catch(error) {
           console.log("Error on iframe message event", error)
@@ -116,8 +117,7 @@
       window.top.postMessage({ eventName, callback, action: 'addListener' }, '*');
     },
     
-    chart: { 
-    }
+    chart: {}
   }
 
   vulcanSDK.chart.ui = {
@@ -149,10 +149,8 @@
 
   vulcanSDK.chart.viewport = {
     get: (callback) => {
-      console.log("callback", callback);
       window.top.postMessage({action: 'viewport/get'}, '*');
       vulcanSDK.callBacks.viewport.get = callback;
-      console.log("this is preserved", vulcanSDK.callBacks.viewport.get);
     },
     // option = { x, y } : Setting viewport translate
     set: (option) => {
@@ -178,11 +176,11 @@
       window.top.postMessage({...option, action: 'settings/enableBackgroundImage'}, '*');
     },
     setBackgroundImage: (option) => {
-      window.top.postMessage({...option, action: 'viewport/setBackgroundImage'}, '*');
+      window.top.postMessage({...option, action: 'settings/setBackgroundImage'}, '*');
     },
     getBackgroundImage: (option, callback) => {
-      window.top.postMessage({...option, action: 'viewport/getBackgroundImage'}, '*');
-      vulcanSDKcallBacks.settings.getBackgroundImage = callback;
+      window.top.postMessage({...option, action: 'settings/getBackgroundImage'}, '*');
+      vulcanSDK.callBacks.settings.getBackgroundImage = callback;
     },
     enableGrid: (option) => {
       window.top.postMessage({...option, action: 'settings/enableGrid'}, '*');
@@ -211,16 +209,16 @@
       window.top.postMessage({action: 'settings/disablePublicLink'}, '*');
     },
     getPublicStatus: (option, callback) => {
-      window.top.postMessage({...option, action: 'viewport/getPublicStatus'}, '*');
-      vulcanSDKcallBacks.settings.getPublicStatus = callback;
+      window.top.postMessage({...option, action: 'settings/getPublicStatus'}, '*');
+      vulcanSDK.callBacks.settings.getPublicStatus = callback;
     },
     getWidgetLink: (option, callback) => {
-      window.top.postMessage({...option, action: 'viewport/getWidgetLink'}, '*');
-      vulcanSDKcallBacks.settings.getWidgetLink = callback;
+      window.top.postMessage({...option, action: 'settings/getWidgetLink'}, '*');
+      vulcanSDK.callBacks.settings.getWidgetLink = callback;
     },
     getWidgetEmbedSnippet: (option, callback) => {
-      window.top.postMessage({...option, action: 'viewport/getWidgetEmbedSnippet'}, '*');
-      vulcanSDKcallBacks.settings.getWidgetEmbedSnippet = callback;
+      window.top.postMessage({...option, action: 'settings/getWidgetEmbedSnippet'}, '*');
+      vulcanSDK.callBacks.settings.getWidgetEmbedSnippet = callback;
     },
     enableWidgetComments: (option) => {
       window.top.postMessage({...option, action: 'settings/enableWidgetComments'}, '*');
@@ -236,7 +234,7 @@
     },
     get: (option, callback) => {
       window.top.postMessage({...option, action: 'objects/get'}, '*');
-      vulcanSDKcallBacks.objects.get = callback;
+      vulcanSDK.callBacks.objects.get = callback;
     },
     update: (option) => {
       window.top.postMessage({...option, action: 'objects/update'}, '*');

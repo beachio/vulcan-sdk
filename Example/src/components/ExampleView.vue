@@ -89,12 +89,13 @@ export default {
     callSDK() {
       if (this.category && this.method) {
         const schemeInfo = scheme[this.category] ? scheme[this.category][this.method] : null;
+        console.log("check for spelling mistake", schemeInfo);
         // Get additional method information and take care of addtional handling
         if (schemeInfo) {
           // Callback case
           if (schemeInfo.type === 'callback') {
             const callbackFunc = function(data) {
-              console.log("returned from iframe", data);
+              console.log("*********returned from iframe", data);
             };
             vulcanSDK.chart[this.category][this.method].apply(null, [callbackFunc]);
             return;

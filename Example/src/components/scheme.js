@@ -90,7 +90,10 @@ const scheme = {
           validator: ["number"]
         }
       ]
-    }
+    },
+    getZoomLevel: {
+      type: 'callback'
+    },
   },
 
   settings: {
@@ -123,6 +126,9 @@ const scheme = {
         }
       ]
     },
+    getBackgroundImage: {
+      type: 'callback'
+    },
     updateGridOptions: {
       type: 'model',
       model: {
@@ -153,6 +159,15 @@ const scheme = {
           textOff: "Disabled"
         }
       ]
+    },
+    getPublicStatus: {
+      type: 'callback'
+    },
+    getWidgetLink: {
+      type: 'callback'
+    },
+    getWidgetEmbedSnippet: {
+      type: 'callback'
     },
     moveToProject: {
       type: 'model',
@@ -185,6 +200,9 @@ const scheme = {
           required: true
         }
       ]
+    },
+    get: {
+      type: 'callback'
     },
     bringForward: {
       type: 'model',
