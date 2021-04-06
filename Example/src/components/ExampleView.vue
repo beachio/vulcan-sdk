@@ -15,6 +15,7 @@
               :items="categories"
               label="Category"
               v-model="category"
+              @change="onChangeCategory"
             ></v-select>
           </v-col>
         </v-row>
@@ -108,6 +109,7 @@ export default {
             return;
           }
           if (schemeInfo.type === 'model') {
+            console.log("--------option", this.optionModel);
             const option = this.optionModel;
             vulcanSDK.chart[this.category][this.method].apply(null, [option]);
             return;
@@ -137,6 +139,11 @@ export default {
         }
         this.responseData = null;
       }
+    },
+    onChangeCategory() {
+      this.optionModel = null;
+      this.schema.fields = null;
+      this.responseData = null;
     }
   },
 }

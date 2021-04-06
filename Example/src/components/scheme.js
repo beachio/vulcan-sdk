@@ -1,4 +1,38 @@
 const scheme = {
+  ui: {
+    openDrawer: {
+      type: 'model',
+      model: {
+        url: ''
+      },
+      fields: [
+        {
+          type: 'input',
+          inputType: 'text',
+          label: 'URL',
+          model: 'url',
+          placeholder: 'URL',
+          required: true
+        }
+      ]
+    },
+    openDialog: {
+      type: 'model',
+      model: {
+        url: ''
+      },
+      fields: [
+        {
+          type: 'input',
+          inputType: 'text',
+          label: 'URL',
+          model: 'url',
+          placeholder: 'URL',
+          required: true
+        }
+      ]
+    }
+  },
   viewport: {
     get: {
       type: 'callback'
@@ -186,6 +220,27 @@ const scheme = {
     },
   },
   objects: {
+    create: {
+      type: 'model',
+      model: {
+        type: ''
+      },
+      fields: [
+        {
+          type: 'select',
+          label: 'Type',
+          model: 'type',
+          values: [
+            { id: 'Base_RectObject', name: 'Rect' },
+            { id: 'Base_TextObject', name: 'Text' },
+            { id: 'Base_ArrowObject', name: 'Arrow' },
+            { id: 'Base_CommentObject', name: 'Comment' },
+            { id: 'Base_ImageObject', name: 'Image' },
+          ],
+          required: true
+        }
+      ]
+    },
     update: {
       type: 'model',
       model: {
@@ -364,7 +419,6 @@ const scheme = {
           model: 'type',
           values: [
             { id: 'Base_RectObject', name: 'Rect' },
-            { id: 'Base_PolygonObject', name: 'Polygon' },
             { id: 'Base_TextObject', name: 'Text' },
             { id: 'Base_ArrowObject', name: 'Arrow' },
             { id: 'Base_CommentObject', name: 'Comment' },

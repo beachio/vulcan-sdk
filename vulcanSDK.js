@@ -121,8 +121,8 @@
   }
 
   vulcanSDK.chart.ui = {
-    openDrawer: (url, option) => {
-      window.top.postMessage({...option, url, action: 'ui/openDrawer'}, '*');
+    openDrawer: (option) => {
+      window.top.postMessage({...option, action: 'ui/openDrawer'}, '*');
     },
     closeDrawer: () => {
       window.top.postMessage({action: 'ui/closeDrawer'}, '*');
