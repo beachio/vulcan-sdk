@@ -34,6 +34,9 @@
         });
       }
       vulcanSDK.onReady(run);
+      vulcanSDK.addListener("ALL_OBJECTS_LOADED", function() {
+        console.log("All Objects Loaded");
+      });
     </script>
   </body>
 </html>
