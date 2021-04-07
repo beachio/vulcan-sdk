@@ -109,7 +109,6 @@ export default {
             return;
           }
           if (schemeInfo.type === 'model') {
-            console.log("--------option", this.optionModel);
             const option = this.optionModel;
             vulcanSDK.chart[this.category][this.method].apply(null, [option]);
             return;
