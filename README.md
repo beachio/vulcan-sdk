@@ -1,4 +1,4 @@
-# Unsplash
+# Vulcan SDK
 
 Official Javascript wrapper for the [Vulcan](https://vulcanapp.com/) SDK.
 
@@ -43,7 +43,24 @@ vulcanSDK.initialize({
 
 
 #### Possible Icon Type
-Supports `svg` and `material-icons` at the moment.
+Supports `svg` and `material-icon` at the moment.
+
+Example of `material-icon` iconType
+```js
+vulcanSDK.initialize({
+  extensionPoints: {
+    leftBar: [{
+      title: 'MY PLUGIN TITLE',
+      icon: 'mdi-launch',
+      iconType: 'material-icon'
+      slug: 'my-plugin-title',
+      onClick: () => {
+        ...
+      }
+    }]
+  }
+});
+```
 
 
 ### Making a request
@@ -87,6 +104,8 @@ vulcanSDK.addListener('SELECTION_UPDATED');
 ## Example
 
 `samples` folder contains rather straightforward samples with static HTML. 
+
+
 `Example` folder allows you to experiment the SDK in full mode. As a Vue application itself, to run the Example application
   - `yarn` or `npm install`
   - `yarn serve` or `npm serve` to run the server on http://localhost:8087
