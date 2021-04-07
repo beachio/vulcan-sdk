@@ -41,6 +41,8 @@ vulcanSDK.initialize({
 #### Possible Extension Points
 `leftbar`, `bottomNavBar`, `topRightBar`, `chartTabBarTabItem`, `chartTabBarButtonItem`, `propertyEditor` and `imagePickerTab`.
 
+![extension points](https://user-images.githubusercontent.com/53578896/113806683-53654880-9795-11eb-95fb-634304069c01.png)
+
 
 #### Possible Icon Type
 Supports `svg` and `material-icon` at the moment.
