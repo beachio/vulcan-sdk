@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width,user-scalable=no" />
-    <title>Vulcan SDK - onClick Version(UI - Open Drawer)</title>
+    <title>Vulcan SDK - Image Picker Version </title>
   </head>
   <body>
     <script src="./vulcanSDK.js" type="application/javascript"></script>
@@ -12,14 +12,10 @@
       function run() {
         vulcanSDK.initialize({
           extensionPoints: {
-            leftBar: [{
-              title: 'Relative Path',
-              icon: 'mdi-launch',
-              iconType: 'material-icon',
-              slug: 'relative',
-              onClick: () => {
-                vulcanSDK.chart.ui.openDrawer('https://www.vulcanapp.com', { title: 'My Timer', width: 375, height: 490 });
-              }
+            imagePickerTab: [{
+              title: 'Custom Gallery',
+              slug: 'custom-gallery',
+              iframeURL: 'http://localhost:8088'
             }]
           }
         });
