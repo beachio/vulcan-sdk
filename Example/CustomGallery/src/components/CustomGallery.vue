@@ -1,10 +1,10 @@
 <template>
   <v-card min-height="100%" class="timer-wrapper">
-    <v-card-title>
+    <v-card-title class="px-5">
       Custom Gallery
     </v-card-title>
 
-    <v-card-text>
+    <v-card-text class="px-5">
       <v-text-field v-model="query" @keyup.enter.native="fetchImages" placeholder="Type something..." solo>
         <template v-slot:append>
           <v-fade-transition group leave-absolute>
@@ -42,7 +42,7 @@
 <script>
 import axios from 'axios';
 
-const SERVER_URL = 'https://parser-server-instance.getforge.io'
+const SERVER_URL = 'http://localhost:1337';
 const PER_PAGE = 20;
 export default {
   name: 'CustomGallery',
