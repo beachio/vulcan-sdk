@@ -22,7 +22,7 @@
                     key="0"
                   />
                   <v-btn @click="fetchImages" icon key="1">
-                    <v-icon>search</v-icon>
+                    <v-icon>mdi-search-web</v-icon>
                   </v-btn>
                 </v-fade-transition>
               </template>
@@ -33,18 +33,11 @@
                 v-for="(image, index) in images"
                 :key="index"
                 :style="{backgroundImage: `url(${image.urls.thumb})`}"
+                @dragstart="dragStart"
+                @dragend="dragEnd(image, $event)"
               >
               </div>
             </div>
-          </v-col>
-        </v-row>
-        <v-row align="center">
-          <v-col
-            class="d-flex justify-space-between"
-            cols="12"
-          >
-            <v-btn text small color="error" @click="remove">Remove</v-btn>
-            <v-btn text small color="info" @click="save">Save</v-btn>
           </v-col>
         </v-row>
       </v-container>
@@ -79,11 +72,18 @@ export default {
         if (response && response.data) this.images = response.data.results || [];
       }
     },
-    save() {
-
+    dragStart() {
+      window.top.postMessage("dragging!", "*");
     },
-    remove() {
-
+    dragEnd(image, event) {
+      const data = {
+        mouse:{
+          x: event.pageX,
+          y: event.pageY,
+        },
+        image
+      }
+      window.top.postMessage(JSON.stringify(data), "*");
     }
   },
 }
