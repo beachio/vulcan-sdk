@@ -29,6 +29,7 @@
           v-for="(image, index) in images"
           :key="index"
           :style="{backgroundImage: `url(${image.urls.thumb})`}"
+          @dragstart="dragStart"
           @dragend="dragEnd(image, $event)"
           @click="selectImage(image)"
         >
@@ -42,7 +43,7 @@
 <script>
 import axios from 'axios';
 
-const SERVER_URL = 'http://localhost:1337';
+const SERVER_URL = 'https://dockerhost.forge-parse-server.c66.me:40066'
 const PER_PAGE = 20;
 export default {
   name: 'CustomGallery',
@@ -83,6 +84,12 @@ export default {
             }
           }
         }
+      }
+      window.top.postMessage(data, "*");
+    },
+    dragStart() {
+      const data = {
+        action: 'imagePicker_dragStart'
       }
       window.top.postMessage(data, "*");
     },
