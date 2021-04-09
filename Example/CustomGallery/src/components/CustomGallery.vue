@@ -29,6 +29,7 @@
             </v-text-field>
             <div class="custom-gallery__search-result">
               <div
+                draggable
                 class="custom-gallery__search-item"
                 v-for="(image, index) in images"
                 :key="index"
@@ -72,18 +73,26 @@ export default {
         if (response && response.data) this.images = response.data.results || [];
       }
     },
-    dragStart() {
-      window.top.postMessage("dragging!", "*");
-    },
     dragEnd(image, event) {
       const data = {
-        mouse:{
+        action: 'dragEnd',
+        point:{
           x: event.pageX,
           y: event.pageY,
         },
-        image
+        image: {
+          body: {
+            url: image.urls.full,
+            quad: {
+              url: image.urls.regular
+            },
+            thumb: {
+              url: image.urls.thumb
+            }
+          }
+        }
       }
-      window.top.postMessage(JSON.stringify(data), "*");
+      window.top.postMessage(data, "*");
     }
   },
 }
