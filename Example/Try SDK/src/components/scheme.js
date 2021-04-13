@@ -10,7 +10,7 @@ const scheme = {
           type: 'input',
           inputType: 'text',
           label: 'URL',
-          model: 'url',
+          model: 'drawerURL',
           placeholder: 'URL',
           required: true
         }
@@ -26,7 +26,7 @@ const scheme = {
           type: 'input',
           inputType: 'text',
           label: 'URL',
-          model: 'url',
+          model: 'dialogURL',
           placeholder: 'URL',
           required: true
         }
