@@ -239,6 +239,12 @@
     update: (option) => {
       window.top.postMessage({...option, action: 'objects/update'}, '*');
     },
+    setSize: (option) => {
+      window.top.postMessage({...option, action: 'objects/setSize'}, '*');
+    },
+    setPosition: (option) => {
+      window.top.postMessage({...option, action: 'objects/setPosition'}, '*');
+    },
     // option = { objectId }
     bringForward: (option) => {
       window.top.postMessage({...option, action: 'objects/bringForward'}, '*');

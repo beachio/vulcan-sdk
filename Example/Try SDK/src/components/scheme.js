@@ -253,6 +253,68 @@ const scheme = {
           label: 'Object Id',
           model: 'objectId',
           required: true
+        },
+        {
+          type: 'input',
+          inputType: 'text',
+          label: 'Title',
+          model: 'title'
+        }
+      ]
+    },
+    setSize: {
+      type: 'model',
+      model: {
+        objectId: ''
+      },
+      fields: [
+        {
+          type: 'input',
+          inputType: 'text',
+          label: 'Object Id',
+          model: 'objectId',
+          required: true
+        },
+        {
+          type: 'input',
+          inputType: 'number',
+          label: 'Width',
+          model: 'width'
+        },
+        {
+          type: 'input',
+          inputType: 'number',
+          label: 'Height',
+          model: 'height'
+        }
+      ]
+    },
+    setPosition: {
+      type: 'model',
+      model: {
+        objectId: '',
+        x: '',
+        y: ''
+      },
+      fields: [
+        {
+          type: 'input',
+          inputType: 'text',
+          label: 'Object Id',
+          model: 'objectId',
+          required: true
+        },
+        {
+          type: 'input',
+          inputType: 'number',
+          label: 'X',
+          model: 'x'
+        },
+        {
+          type: 'input',
+          inputType: 'number',
+          label: 'Y',
+          model: 'y'
         }
       ]
     },
