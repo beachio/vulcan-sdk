@@ -2,6 +2,11 @@ import Vue from 'vue';
 import Vuetify from "vuetify";
 import "vuetify/dist/vuetify.min.css";
 
+import VueFormGenerator from 'vue-form-generator'
+import 'vue-form-generator/dist/vfg.css'
+
+import ModuleLibrary from 'vfg-field-object';
+
 import "./assets/styles.css";
 import App from './App.vue';
 
@@ -23,6 +28,10 @@ const vuetify = new Vuetify({
     }
   }
 });
+
+Vue.use(VueFormGenerator)
+
+Vue.use(ModuleLibrary);
 
 new Vue({
   vuetify,

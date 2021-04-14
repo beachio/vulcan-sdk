@@ -58,15 +58,12 @@
 </template>
 
 <script>
-import VueFormGenerator from "vue-form-generator";
 import JsonViewer from "vue-json-viewer";
 import scheme from './scheme';
-import 'vue-form-generator/dist/vfg.css'
 
 export default {
   name: 'ExampleView',
   components: {
-		"vue-form-generator": VueFormGenerator.component,
     JsonViewer
 	},
   data() {

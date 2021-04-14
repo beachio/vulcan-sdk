@@ -265,7 +265,11 @@ const scheme = {
     setSize: {
       type: 'model',
       model: {
-        objectId: ''
+        objectId: '',
+        size: {
+          width: 100,
+          height: 100
+        }
       },
       fields: [
         {
@@ -276,16 +280,25 @@ const scheme = {
           required: true
         },
         {
-          type: 'input',
-          inputType: 'number',
-          label: 'Width',
-          model: 'width'
-        },
-        {
-          type: 'input',
-          inputType: 'number',
-          label: 'Height',
-          model: 'height'
+          type: "object",
+          label: "Size",
+          model: "size",
+          schema: {
+            fields: [
+              {
+                type: 'input',
+                inputType: 'number',
+                label: 'Width',
+                model: 'width'
+              },
+              {
+                type: 'input',
+                inputType: 'number',
+                label: 'Height',
+                model: 'height'
+              }
+            ]
+          }
         }
       ]
     },
