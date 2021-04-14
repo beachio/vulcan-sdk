@@ -306,8 +306,10 @@ const scheme = {
       type: 'model',
       model: {
         objectId: '',
-        x: '',
-        y: ''
+        position: {
+          x: 100,
+          y: 100
+        }
       },
       fields: [
         {
@@ -318,16 +320,25 @@ const scheme = {
           required: true
         },
         {
-          type: 'input',
-          inputType: 'number',
-          label: 'X',
-          model: 'x'
-        },
-        {
-          type: 'input',
-          inputType: 'number',
-          label: 'Y',
-          model: 'y'
+          type: "object",
+          label: "Position",
+          model: "position",
+          schema: {
+            fields: [
+              {
+                type: 'input',
+                inputType: 'number',
+                label: 'X',
+                model: 'x'
+              },
+              {
+                type: 'input',
+                inputType: 'number',
+                label: 'Y',
+                model: 'y'
+              }
+            ]
+          }
         }
       ]
     },
