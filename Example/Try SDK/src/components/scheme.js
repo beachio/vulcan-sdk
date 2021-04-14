@@ -509,6 +509,36 @@ const scheme = {
         }
       ]
     },
+    showEditor: {
+      type: 'model',
+      model: {
+        objectId: ''
+      },
+      fields: [
+        {
+          type: 'input',
+          inputType: 'text',
+          label: 'Object Id',
+          model: 'objectId',
+          required: true
+        }
+      ]
+    },
+    hideEditor: {
+      type: 'model',
+      model: {
+        objectId: ''
+      },
+      fields: [
+        {
+          type: 'input',
+          inputType: 'text',
+          label: 'Object Id',
+          model: 'objectId',
+          required: true
+        }
+      ]
+    },
     createSymbol: {
       type: 'model',
       model: {
