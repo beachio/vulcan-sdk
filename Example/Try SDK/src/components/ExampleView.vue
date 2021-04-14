@@ -151,8 +151,10 @@ export default {
   padding: 20px;
   width: 100%;
 }
+</style>
 
+<style>
 .vue-form-generator fieldset {
-  border: none;
+  padding: 10px;
 }
 </style>

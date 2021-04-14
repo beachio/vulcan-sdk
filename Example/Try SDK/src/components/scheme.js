@@ -244,7 +244,18 @@ const scheme = {
     update: {
       type: 'model',
       model: {
-        objectId: ''
+        objectId: '',
+        option: {
+          title: '',
+          size: {
+            width: 100,
+            height: 100
+          },
+          position: {
+            x: 0,
+            y: 0
+          }
+        }
       },
       fields: [
         {
@@ -255,10 +266,61 @@ const scheme = {
           required: true
         },
         {
-          type: 'input',
-          inputType: 'text',
-          label: 'Title',
-          model: 'title'
+          type: 'object',
+          label: 'Option',
+          model: 'option',
+          schema: {
+            fields: [
+              {
+                type: 'input',
+                inputType: 'text',
+                label: 'Title',
+                model: 'title'
+              },
+              {
+                type: "object",
+                label: "Size",
+                model: "size",
+                schema: {
+                  fields: [
+                    {
+                      type: 'input',
+                      inputType: 'number',
+                      label: 'Width',
+                      model: 'width'
+                    },
+                    {
+                      type: 'input',
+                      inputType: 'number',
+                      label: 'Height',
+                      model: 'height'
+                    }
+                  ]
+                }
+              },
+              {
+                type: "object",
+                label: "Position",
+                model: "position",
+                schema: {
+                  fields: [
+                    {
+                      type: 'input',
+                      inputType: 'number',
+                      label: 'X',
+                      model: 'x'
+                    },
+                    {
+                      type: 'input',
+                      inputType: 'number',
+                      label: 'Y',
+                      model: 'y'
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         }
       ]
     },
