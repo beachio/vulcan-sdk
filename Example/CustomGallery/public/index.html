@@ -21,24 +21,6 @@
     </noscript>
     <div id="app"></div>
     <script src="./vulcanSDK.js" type="application/javascript"></script>
-    <script>
-      function run() {
-        vulcanSDK.initialize({
-          extensionPoints: {
-            leftBar: [{
-              title: 'Relative Path',
-              icon: 'gavel',
-              iconType: 'material-icon',
-              slug: 'polls',
-              onClick: () => {
-                vulcanSDK.chart.ui.openDrawer('http://localhost:8087', { title: 'My Timer', width: 375, height: 490 });
-              }
-            }]
-          }
-        });
-      }
-      vulcanSDK.onReady(run);
-    </script>
     <!-- built files will be auto injected -->
   </body>
 </html>
