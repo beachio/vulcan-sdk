@@ -21,6 +21,12 @@
     </noscript>
     <div id="app"></div>
     <script src="./vulcanSDK.js" type="application/javascript"></script>
+    <script>
+      function run() {
+        vulcanSDK.initialize({});
+      }
+      vulcanSDK.onReady(run);
+    </script>
     <!-- built files will be auto injected -->
   </body>
 </html>

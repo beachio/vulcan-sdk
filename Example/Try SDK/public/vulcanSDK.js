@@ -52,37 +52,38 @@
       const { extensionPoints } = options;
       const recognizedEvents = ['onClick'];
       const eventBuses = {};
-      Object.keys(extensionPoints).forEach(point => {
-        const infos = extensionPoints[point];
-        if (infos) {
-          infos.forEach(info => {
-            // Special handling for event callbacks
-            // Register to event buses and filter out event callbacks
-            recognizedEvents.forEach(eventType => {
-              if (info.hasOwnProperty(eventType)) {
-                eventBuses[eventType] = info[eventType];
-                delete info[eventType];
-              }
-            });
-    
-            window.top.postMessage({...info, point, action: 'initPlugin'}, '*');
-          })
-        }
+      if (extensionPoints) {
+        Object.keys(extensionPoints).forEach(point => {
+          const infos = extensionPoints[point];
+          if (infos) {
+            infos.forEach(info => {
+              // Special handling for event callbacks
+              // Register to event buses and filter out event callbacks
+              recognizedEvents.forEach(eventType => {
+                if (info.hasOwnProperty(eventType)) {
+                  eventBuses[eventType] = info[eventType];
+                  delete info[eventType];
+                }
+              });
+      
+              window.top.postMessage({...info, point, action: 'initPlugin'}, '*');
+            })
+          }
 
-      });
+        });
+      }
 
 
       /* Register Event handlers */
       var eventMethod = window.addEventListener ? 'addEventListener' : 'attachEvent';
       var eventer = window[eventMethod];
       var messageEvent = eventMethod == 'attachEvent' ? 'onmessage' : 'message';
-
       // IMPORTANT
       // Listen to message from parent window
       // - eventType: onClick, etc
       // - listenerType: SELECTION_UPDATED, OBJECTS_CREATED, OBJECTS_UPDATED
       // - callbackType: viewport/get, settings/getWidgetLink, etc 
-      eventer(messageEvent,function(e) {
+      eventer(messageEvent, function(e) {
         try {
           // - eventType: onClick, etc
           const eventType = e.data?.eventType; 
@@ -150,6 +151,7 @@
   vulcanSDK.chart.viewport = {
     get: (callback) => {
       window.top.postMessage({action: 'viewport/get'}, '*');
+      console.log("inside vulcan sdk", callback);
       vulcanSDK.callBacks.viewport.get = callback;
     },
     // option = { x, y } : Setting viewport translate
