@@ -100,6 +100,7 @@
 
           // - callbackType: viewport/get, settings/getWidgetLink, etc 
           const callbackType = e.data?.callbackType;
+
           if (callbackType) {
             const callbackTypeCategory = callbackType.split('/')[0];
             const callbackTypeEvent = callbackType.split('/')[1];
@@ -151,7 +152,6 @@
   vulcanSDK.chart.viewport = {
     get: (callback) => {
       window.top.postMessage({action: 'viewport/get'}, '*');
-      console.log("inside vulcan sdk", callback);
       vulcanSDK.callBacks.viewport.get = callback;
     },
     // option = { x, y } : Setting viewport translate
